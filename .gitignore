@@ -1,0 +1,9 @@
+# Local/editor temp files
+~$*
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# Keep generated QA/temp output out of evidence repo
+_rendered_qa/
