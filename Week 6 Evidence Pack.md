@@ -317,3 +317,28 @@ Security Guard Lambda và EventBridge rule gần như không tạo chi phí ở 
 ![](week6-evidence-media/media/image7.png)
 
 *Figure 33. S3 upload test evidence cho thấy preventive control block non-compliant object uploads.*
+
+## Bonus Stretch Goals
+
+### Bonus 1 — Wasteful → Changed Reflection
+
+Nhóm phát hiện khoản lãng phí lớn nhất không đến từ TaskIO W6 stack mà đến từ một OpenSearch Serverless vector collection `myproduct-kb` trong region `us-west-2`, thuộc stack `rag-w-bedrock-kb`. Cost Explorer cho thấy resource này tạo khoảng `12.97 USD` trong hai ngày qua `USW2-IndexingOCU` và `USW2-SearchOCU`, dù nó không phục vụ demo TaskIO. Nhóm đã kiểm tra resource ownership, xác nhận collection không thuộc các stack `taskio-w6-*`, sau đó xóa CloudFormation-managed collection. Sau cleanup, `aws opensearchserverless list-collections --region us-west-2` trả về danh sách rỗng. Thay đổi này loại bỏ cost driver lớn nhất, củng cố chiến lược W6 minimal-cost, và giúp account không tiếp tục bị charge OCU-hour ngoài phạm vi bài nộp.
+
+### Bonus 2 — RI / Savings Plans Break-Even Analysis
+
+Compute footprint W6 hiện tại chỉ có hai EC2 `t3.micro` ở `us-east-1a`: một backend EC2 đang chạy và một demo EC2 đang stopped. Hai EBS volumes hiện đều là `gp3` với `8 GiB`, `3000 IOPS` và `125 MiB/s`, nên nhóm không chọn gp2→gp3 migration làm bonus vì không còn gp2 volume thật để migrate.
+
+Pricing API cho `Linux t3.micro` ở `US East (N. Virginia)` trả về On-Demand price là `0.0104 USD/hour`. Nếu cả hai instance chạy liên tục trong một tuần, EC2 compute cost chỉ khoảng:
+
+```text
+2 instances * 24 hours/day * 7 days * 0.0104 USD/hour = 3.49 USD/week
+```
+
+Một 1-year Standard Reserved Instance all-upfront cho `t3.micro` có upfront fee khoảng `53 USD`. Break-even so với On-Demand nếu workload chạy liên tục là:
+
+```text
+53 USD / 0.0104 USD/hour = ~5,096 hours
+5,096 hours / 24 = ~212 days
+```
+
+Vì W6 workshop workload chỉ tồn tại khoảng một tuần và compute spend dự kiến thấp hơn rất nhiều so với mức cam kết 1 năm, nhóm quyết định không mua RI hoặc Savings Plan. Quyết định hợp lý hơn cho W6 là dùng On-Demand nhỏ nhất có thể, stop demo EC2 khi không cần, giữ backend ở `t3.micro`, và không thêm managed service đắt tiền. Nếu TaskIO chuyển sang production với workload chạy ổn định trên cùng footprint trong ít nhất 7 tháng, lúc đó RI hoặc Compute Savings Plan mới đáng được xem xét.
