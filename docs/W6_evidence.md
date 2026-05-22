@@ -18,15 +18,15 @@ Stack W6 hiện tại đủ để demo yêu cầu của tuần này dù không p
 
 Trong lần review cost đầu tiên, nhóm cũng phát hiện một cost driver OpenSearch Serverless có sẵn trong workshop account. Finding này được đưa vào report vì nó thể hiện nhóm có điều tra khoản chi bất thường trên AWS, thay vì chỉ báo cáo các resource do nhóm chủ động deploy.
 
-![](week6-evidence-media/media/image5.png)
+![](../week6-evidence-media/media/image5.png)
 
 *Figure 1. Cost Explorer cho thấy khoảng 5 USD OpenSearch cost đã tồn tại trong workshop account trước khi TaskIO W6 được deploy.*
 
-![](week6-evidence-media/media/image6.png)
+![](../week6-evidence-media/media/image6.png)
 
 *Figure 2. CloudTrail logging evidence cho thấy account activity đang được ghi lại để phục vụ audit và điều tra.*
 
-![](week6-evidence-media/media/image16.png)
+![](../week6-evidence-media/media/image16.png)
 
 *Figure 3. Lần kiểm tra cost thứ hai cho thấy OpenSearch cost tăng lên gần 13 USD trong region us-west-2.*
 
@@ -125,15 +125,15 @@ Full-stack resource coverage:
 | Resilience | AWS Backup vault/plans, SQS DLQ, CloudWatch alarms/log groups | Mandatory tags | Kept for audit/restore evidence; not Cost Guard stop targets |
 | Operations | Cost Guard Lambda, Security Guard Lambda, EventBridge rules, SNS, Budget | Mandatory tags | These controls should normally use `keep=true` because they protect the environment |
 
-![](week6-evidence-media/media/image10.png)
+![](../week6-evidence-media/media/image10.png)
 
 *Figure 4. Tag Editor evidence cho backend EC2 của TaskIO với bộ tag chuẩn của Week 6.*
 
-![](week6-evidence-media/media/image25.png)
+![](../week6-evidence-media/media/image25.png)
 
 *Figure 5. Tag Editor evidence cho VPC của TaskIO với cùng tagging strategy đã chuẩn hóa.*
 
-![](week6-evidence-media/media/image.png)
+![](../week6-evidence-media/media/image.png)
 
 *Figure 5a. Tag evidence cho Lambda `taskio-w6-summarizeWorkspace`, bổ sung resource type thứ ba ngoài EC2 và VPC.*
 
@@ -148,7 +148,7 @@ Trong workshop environment, compliance được verify thủ công qua AWS Resou
 
 Nhóm đã thử activate custom cost allocation tags trong AWS Billing Console. Tuy nhiên workshop account là AWS Organizations member account, nên billing permissions bị giới hạn ở payer account level. Vì vậy nhóm không thể activate custom cost allocation tags trực tiếp từ sandbox account. Trainer đã chấp nhận limitation này sau khi nhóm giải thích rằng activation phải được thực hiện ở payer/management account, không phải từ member account dùng cho workshop. Vì tag-based Cost Explorer breakdown chưa khả dụng trong sandbox, evidence dùng service-level Cost Explorer breakdown làm fallback và vẫn giữ tagging strategy để khi payer account activate tags thì workload có thể group theo Application, Environment, CostCenter và Owner ngay lập tức.
 
-![](week6-evidence-media/media/image1.png)
+![](../week6-evidence-media/media/image1.png)
 
 *Figure 6. Billing console limitation cho thấy cost allocation tags phải được quản lý ở payer account level, không phải từ workshop member account.*
 
@@ -168,19 +168,19 @@ AWS Cost Explorer được dùng để review service-level spend và baseline s
 | Daily Cost Guard Period | Daily |
 | Daily Cost Guard Action Path | SNS topic `healthbot-cost-guard-alerts` -> Lambda `costGuardLambda` |
 
-![](week6-evidence-media/media/image22.png)
+![](../week6-evidence-media/media/image22.png)
 
 *Figure 7. Cost Explorer service breakdown dùng để xác định cost driver chính trong AWS account.*
 
-![](week6-evidence-media/media/image4.png)
+![](../week6-evidence-media/media/image4.png)
 
 *Figure 8. Cost Explorer trend graph dùng để so sánh spending trong giai đoạn quan sát Week 6.*
 
-![](week6-evidence-media/media/image13.png)
+![](../week6-evidence-media/media/image13.png)
 
 *Figure 9. AWS Budget configuration cho TaskIO-W6-Budget với threshold 150 USD. Daily budget `TaskIO-W6-Daily-Cost-Guard` cũng đã được tạo để nối cost signal vào SNS -> Cost Guard path.*
 
-![](week6-evidence-media/media/image3.png)
+![](../week6-evidence-media/media/image3.png)
 
 *Figure 10. Cost allocation tag activation attempt bị chặn bởi billing permissions của workshop account.*
 
@@ -208,43 +208,43 @@ Full-stack Cost Guard policy:
 
 For the current account, the intended `keep=true` resource is the running backend instance `taskio-w6-backend-single-ec2`. The demo instance remains without `keep=true` so Cost Guard can produce clear `StopInstances` evidence. This keeps the W6 evidence simple while documenting how the same tag model would protect or control full-stack resources later.
 
-![](week6-evidence-media/media/image2.png)
+![](../week6-evidence-media/media/image2.png)
 
 *Figure 11. Cost Guard Lambda IAM role evidence cho least-privilege permissions dùng trong EC2 stop automation.*
 
-![](week6-evidence-media/media/image17.png)
+![](../week6-evidence-media/media/image17.png)
 
 *Figure 12. Manual Cost Guard Lambda test trả về success và trigger EC2 stop path.*
 
-![](week6-evidence-media/media/image31.png)
+![](../week6-evidence-media/media/image31.png)
 
 *Figure 13. EC2 console evidence cho thấy target instance chuyển sang stopping/stopped sau automation.*
 
-![](week6-evidence-media/media/image32.png)
+![](../week6-evidence-media/media/image32.png)
 
 *Figure 14. EventBridge daily schedule được cấu hình để tự động invoke Cost Guard Lambda.*
 
-![](week6-evidence-media/media/image12.png)
+![](../week6-evidence-media/media/image12.png)
 
 *Figure 15. CloudTrail event evidence cho EC2 stop action được tạo bởi Cost Guard workflow.*
 
-![](week6-evidence-media/media/image27.png)
+![](../week6-evidence-media/media/image27.png)
 
 *Figure 16. EC2 instance state evidence xác nhận Week 6 demo instance đã được stop bởi control.*
 
-![](week6-evidence-media/media/image8.png)
+![](../week6-evidence-media/media/image8.png)
 
 *Figure 17. AWS Budget to SNS to Lambda cost-driven path được cấu hình cho automated cost response.*
 
-![](week6-evidence-media/media/image20.png)
+![](../week6-evidence-media/media/image20.png)
 
 *Figure 18. SNS topic/subscription evidence cho notification path kết nối đến Cost Guard Lambda.*
 
-![](week6-evidence-media/media/image23.png)
+![](../week6-evidence-media/media/image23.png)
 
 *Figure 19. SNS publish test evidence cho thấy cost notification path có thể trigger downstream automation.*
 
-![](week6-evidence-media/media/image15.png)
+![](../week6-evidence-media/media/image15.png)
 
 *Figure 20. Final Cost Guard integration evidence cho Budget, SNS và Lambda response flow.*
 
@@ -334,27 +334,27 @@ WorkspaceSummaryErrorCount:    sum 5
 
 Lưu ý: tagging strategy chuẩn hóa Application=TaskIO. Custom metric dimension trong CloudWatch cũng dùng Application=TaskIO, nên dashboard và evidence nên chọn cùng dimension này để tránh lệch scope.
 
-![](week6-evidence-media/media/image29.png)
+![](../week6-evidence-media/media/image29.png)
 
 *Figure 21. CloudWatch dashboard overview cho MH3, gom các TaskIO observability widgets vào một màn hình.*
 
-![](week6-evidence-media/media/image33.png)
+![](../week6-evidence-media/media/image33.png)
 
 *Figure 22. CloudWatch dashboard widget cho API Gateway request metrics của TaskIO AI REST API.*
 
-![](week6-evidence-media/media/image14.png)
+![](../week6-evidence-media/media/image14.png)
 
 *Figure 23. CloudWatch dashboard widget cho custom Lambda application metrics được publish vào TaskIO/Operations.*
 
-![](week6-evidence-media/media/image30.png)
+![](../week6-evidence-media/media/image30.png)
 
 *Figure 24. CloudWatch alarm configuration cho Week 6 monitoring control.*
 
-![](week6-evidence-media/media/image28.png)
+![](../week6-evidence-media/media/image28.png)
 
 *Figure 25. CloudWatch alarm state evidence cho thấy alarm có thể được evaluate từ dashboard.*
 
-![](week6-evidence-media/media/image21.png)
+![](../week6-evidence-media/media/image21.png)
 
 *Figure 26. CloudWatch Logs Insights query result dùng để phân tích API Gateway access logs theo method, path và status.*
 
@@ -399,31 +399,31 @@ Supporting preventive control là S3 public/data exposure prevention. S3 account
 
 Security Guard Lambda và EventBridge rule gần như không tạo chi phí ở workshop traffic volume vì chỉ chạy khi có security event. S3 Block Public Access và deny-unencrypted bucket policy là free controls, nên chúng cải thiện security baseline mà không làm tăng rủi ro vượt `150 USD` weekly cost cap.
 
-![](week6-evidence-media/media/image18.png)
+![](../week6-evidence-media/media/image18.png)
 
 *Figure 27. MH4 self-healing setup evidence cho EventBridge và Lambda security automation path.*
 
-![](week6-evidence-media/media/image24.png)
+![](../week6-evidence-media/media/image24.png)
 
 *Figure 28. Security group violation trước remediation, dùng để demo self-healing security loop.*
 
-![](week6-evidence-media/media/image26.png)
+![](../week6-evidence-media/media/image26.png)
 
 *Figure 29. Self-healing result sau khi security automation xóa risky inbound rule.*
 
-![](week6-evidence-media/media/image19.png)
+![](../week6-evidence-media/media/image19.png)
 
 *Figure 30. Security Guard Lambda code/configuration evidence cho remediation logic.*
 
-![](week6-evidence-media/media/image11.png)
+![](../week6-evidence-media/media/image11.png)
 
 *Figure 31. S3 account-level Block Public Access preventive control được bật như supporting security guardrail.*
 
-![](week6-evidence-media/media/image9.png)
+![](../week6-evidence-media/media/image9.png)
 
 *Figure 32. S3 bucket policy preventive control deny uploads không dùng server-side encryption.*
 
-![](week6-evidence-media/media/image7.png)
+![](../week6-evidence-media/media/image7.png)
 
 *Figure 33. S3 upload test evidence cho thấy preventive control block non-compliant object uploads.*
 
