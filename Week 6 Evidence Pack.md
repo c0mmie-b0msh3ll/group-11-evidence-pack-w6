@@ -362,6 +362,8 @@ Lưu ý: chiến lược tagging chuẩn hóa Application=TaskIO. Dimension củ
 
 Kiểm soát bảo mật tự phục hồi của TaskIO W6 bảo vệ hệ thống khỏi truy cập quản trị public ngoài ý muốn. Lỗi cấu hình được chọn là Security Group ingress rule mở SSH ra internet. Đây là kiểu lỗi thực tế vì rule debug tạm thời rất dễ bị để quên sau khi troubleshooting.
 
+### Blast Radius Paragraph
+
 Phạm vi ảnh hưởng nếu không xử lý: rule SSH/RDP public sẽ mở bề mặt quản trị backend ra internet, khiến host liên tục bị scan và brute-force. Nếu kẻ tấn công chiếm được host, họ có thể di chuyển từ EC2 sang secret ứng dụng, logs, đường truy cập S3 và các đường mạng database/cache mà security group đó cho phép. Ngay cả khi ứng dụng vẫn healthy, một rule admin ingress bị quên sau troubleshooting có thể biến thành sự cố bảo mật rộng hơn ở workload. Self-healing guard giảm phạm vi ảnh hưởng bằng cách xóa ingress rule rủi ro ngay sau khi CloudTrail ghi nhận thay đổi.
 
 Vòng phát hiện và xử lý được thiết kế theo event-driven pattern. CloudTrail ghi lại API call `AuthorizeSecurityGroupIngress` không an toàn, EventBridge match event, và Security Guard Lambda gọi `RevokeSecurityGroupIngress` để xóa public rule.
